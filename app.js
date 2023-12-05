@@ -5,8 +5,7 @@ import express from "express";
 const app = express();
 const PORT = process.env.PORT || 8000;
 
-
-async function clickLinkAndScreenshot(userInput) {
+async function startRephrase(userInput) {
   const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
   await page.goto("https://typeset.io/paraphraser");
@@ -43,7 +42,7 @@ async function clickLinkAndScreenshot(userInput) {
 app.get("/paraphrase/", async (req, res) => {
   try {
     const userInput = req.body.text;
-    const result = await clickLinkAndScreenshot(userInput);
+    const result = await startRephrase(userInput);
     res.json(result);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -51,7 +50,15 @@ app.get("/paraphrase/", async (req, res) => {
 });
 app.get("/", async (req, res) => {
   try {
-    res.json('Hello World');
+    res.json("Hello World");
+  } catch (error) {}
+});
+app.get("/test", async (req, res) => {
+  try {
+    const userInput =
+      "Configure the health check monitoring feature to track the health of your API and show an indication of your availability to consumers viewing your API listing";
+    const result = await startRephrase(userInput);
+    res.json(result);
   } catch (error) {}
 });
 
