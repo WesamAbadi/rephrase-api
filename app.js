@@ -1,12 +1,10 @@
 import puppeteer from "puppeteer";
 import cheerio from "cheerio";
 import express from "express";
-import bodyParser from "body-parser";
 
 const app = express();
 const PORT = process.env.PORT || 8000;
 
-app.use(bodyParser.json());
 
 async function clickLinkAndScreenshot(userInput) {
   const browser = await puppeteer.launch({ headless: false });
