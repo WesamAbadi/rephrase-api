@@ -1,4 +1,5 @@
 import puppeteer from "puppeteer";
+import chromium from "chrome-aws-lambda";
 import cheerio from "cheerio";
 import express from "express";
 
@@ -14,8 +15,12 @@ async function startRephrase(userInput) {
   try {
     console.log("Job done");
 
-    const browser = await puppeteer.launch({
+    const browser = await chromium.puppeteer.launch({
+      args: [...chromium.args, "--hide-scrollbars", "--disable-web-security"],
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath,
       headless: true,
+      ignoreHTTPSErrors: true,
     });
     console.log("Job done");
 
