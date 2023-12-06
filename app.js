@@ -15,13 +15,9 @@ async function startRephrase(userInput) {
   try {
     console.log("Job done");
 
-    const browser = await chromium.puppeteer.launch({
-      args: [...chromium.args, "--hide-scrollbars", "--disable-web-security"],
-      defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath,
-      headless: true,
-      ignoreHTTPSErrors: true,
-    });
+const browser = await chromium.puppeteer.launch({
+  executablePath: await chromium.executablePath,
+});
     console.log("Job done");
 
     const page = await browser.newPage();
