@@ -6,8 +6,15 @@ const app = express();
 const PORT = process.env.PORT || 8000;
 
 async function startRephrase(userInput) {
-  const browser = await puppeteer.launch({ headless: false });
+  const browser = await puppeteer.launch({
+    headless: true,
+  });
+
   const page = await browser.newPage();
+  await page.setUserAgent(
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36"
+  );
+  await page.setViewport({ width: 1280, height: 1024 });
   await page.goto("https://typeset.io/paraphraser");
   const textToMatch = "Write here or ";
   const xpathSelector = `//p[contains(text(), "${textToMatch}")]`;
@@ -22,7 +29,6 @@ async function startRephrase(userInput) {
     );
     await page.keyboard.type(userInput);
     await rephrasButton.click();
-
     await page.waitForSelector('svg[data-icon="copy"]');
     const htmlContent = await page.$eval(
       '[data-paraphraser-output="true"]',
@@ -30,8 +36,8 @@ async function startRephrase(userInput) {
     );
     const $ = cheerio.load(htmlContent);
     const textContent = $('div[data-paraphraser-output="true"]').text();
-
     await browser.close();
+    console.log("Job done");
     return { textContent };
   } else {
     await browser.close();
@@ -55,8 +61,7 @@ app.get("/", async (req, res) => {
 });
 app.get("/test", async (req, res) => {
   try {
-    const userInput =
-      "Configure the health check monitoring feature to track the health of your API and show an indication of your availability to consumers viewing your API listing";
+    const userInput = `"The discourse on double standards often points to perceived inconsistencies in the Western world's approach to various global issues, prompting discussions about fairness and equity in international relations."`;
     const result = await startRephrase(userInput);
     res.json(result);
   } catch (error) {}
