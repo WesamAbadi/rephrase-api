@@ -2,21 +2,40 @@ import puppeteer from "puppeteer";
 import cheerio from "cheerio";
 import express from "express";
 
+    console.log("Job done");
+
 const app = express();
+    console.log("Job done");
+
 const PORT = process.env.PORT || 8000;
+    console.log("Job done");
+
 
 async function startRephrase(userInput) {
+        console.log("Job done");
+
   const browser = await puppeteer.launch({
     headless: true,
   });
+    console.log("Job done");
 
   const page = await browser.newPage();
+      console.log("Job done");
+
   await page.setUserAgent(
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36"
   );
+      console.log("Job done");
+
   await page.setViewport({ width: 1280, height: 1024 });
+      console.log("Job done");
+
   await page.goto("https://typeset.io/paraphraser");
+      console.log("Job done");
+
   const textToMatch = "Write here or ";
+      console.log("Job done");
+
   const xpathSelector = `//p[contains(text(), "${textToMatch}")]`;
   await page.waitForXPath(xpathSelector);
   const [inputForm] = await page.$x(xpathSelector);
