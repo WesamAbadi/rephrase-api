@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm install"
+    "build": "npm install -g npm@latest && cd your_project_directory && rm -rf node_modules && npm install"
   },
   "author": "",
   "license": "ISC",
