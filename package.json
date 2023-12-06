@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm install && npm install puppeteer --unsafe-perm=true --allow-root"
+    "build": "npm install && node node_modules/puppeteer/install.js"
   },
   "author": "",
   "license": "ISC",
