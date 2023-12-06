@@ -23,18 +23,26 @@ async function startRephrase(userInput) {
   const [rephrasButton] = await page.$x("//button[contains(., 'Paraphrase')]");
 
   if (inputForm) {
+    console.log("Job done");
+
     await inputForm.click();
     await page.evaluate(
       () => new Promise((resolve) => setTimeout(resolve, 500))
     );
     await page.keyboard.type(userInput);
+    console.log("Job done");
+
     await rephrasButton.click();
+    console.log("Job done");
+
     await page.waitForSelector('svg[data-icon="copy"]');
     const htmlContent = await page.$eval(
       '[data-paraphraser-output="true"]',
       (div) => div.outerHTML
     );
     const $ = cheerio.load(htmlContent);
+    console.log("Job done");
+
     const textContent = $('div[data-paraphraser-output="true"]').text();
     await browser.close();
     console.log("Job done");
