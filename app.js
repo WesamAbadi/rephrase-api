@@ -1,5 +1,4 @@
 import puppeteer from "puppeteer";
-import chromium from "chrome-aws-lambda";
 import cheerio from "cheerio";
 import express from "express";
 
@@ -12,12 +11,13 @@ const PORT = process.env.PORT || 8000;
 console.log("Job done");
 
 async function startRephrase(userInput) {
+    console.log("Job done");
   try {
     console.log("Job done");
 
-const browser = await chromium.puppeteer.launch({
-  executablePath: await chromium.executablePath,
-});
+    const browser = await puppeteer.launch({
+      headless: true,
+    });
     console.log("Job done");
 
     const page = await browser.newPage();
