@@ -30,13 +30,12 @@ async function startRephrase(userInput) {
 
     await page.setViewport({ width: 1280, height: 1024 });
     console.log("Job done");
-
+      
     await page.goto("https://typeset.io/paraphraser");
     console.log("Job done");
 
     const textToMatch = "Write here or ";
     console.log("Job done");
-
     const xpathSelector = `//p[contains(text(), "${textToMatch}")]`;
     await page.waitForXPath(xpathSelector);
     const [inputForm] = await page.$x(xpathSelector);
