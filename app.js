@@ -10,7 +10,7 @@ let browserInstance;
 async function getBrowserInstance() {
   if (!browserInstance) {
     browserInstance = await puppeteer.launch({
-      headless: new,
+      headless: 'new',
     });
   }
   return browserInstance;
