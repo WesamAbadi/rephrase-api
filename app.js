@@ -1,18 +1,24 @@
 import puppeteer from "puppeteer";
 import cheerio from "cheerio";
 import express from "express";
-import axios from "axios"; // Import Axios
+import axios from "axios";
 const app = express();
 const PORT = process.env.PORT || 8000;
 
-async function startRephrase(userInput) {
-  try {
-    const browser = await puppeteer.launch({
+let browserInstance;
+
+async function getBrowserInstance() {
+  if (!browserInstance) {
+    browserInstance = await puppeteer.launch({
       headless: false,
     });
-
+  }
+  return browserInstance;
+}
+async function startRephrase(userInput) {
+  try {
+    const browser = await getBrowserInstance();
     const page = await browser.newPage();
-
     await page.setUserAgent(
       "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36"
     );
@@ -41,31 +47,22 @@ async function startRephrase(userInput) {
       const $ = cheerio.load(htmlContent);
       const textContent = $('div[data-paraphraser-output="true"]').text();
       await browser.close();
+
       return { textContent };
-    } else {
-      await browser.close();
-      return { error: "Could not find input form." };
     }
   } catch (error) {
     console.error("Error in startRephrase:", error);
+    return { error: error.message };
   }
 }
 
-app.use(express.json()); // Add this line to parse JSON requests
+app.use(express.json());
 
 app.post("/paraphrase/", async (req, res) => {
   try {
     const userInput = req.body.text;
-
-    // Use Axios to make a POST request to the "/paraphrase/" endpoint
-    const axiosResponse = await axios.post(
-      "http://localhost:8000/paraphrase/",
-      {
-        text: userInput,
-      }
-    );
-
-    res.json(axiosResponse.data);
+    const result = await startRephrase(userInput);
+    res.json(result);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -74,15 +71,19 @@ app.post("/paraphrase/", async (req, res) => {
 app.get("/", async (req, res) => {
   try {
     res.json("Hello World");
-  } catch (error) {}
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 app.get("/test", async (req, res) => {
   try {
-    const userInput = `"The discourse on double standards often points to perceived inconsistencies in the Western world's approach to various global issues."`;
+    const userInput = `The discourse on double standards often points to perceived inconsistencies in the Western world's approach to various global issues.`;
     const result = await startRephrase(userInput);
     res.json(result);
-  } catch (error) {}
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 app.listen(PORT, () => {
