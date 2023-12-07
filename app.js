@@ -1,7 +1,6 @@
 import puppeteer from "puppeteer";
 import cheerio from "cheerio";
 import express from "express";
-import axios from "axios";
 const app = express();
 const PORT = process.env.PORT || 8000;
 
@@ -23,7 +22,7 @@ async function startRephrase(userInput) {
       "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36"
     );
     await page.setViewport({ width: 1280, height: 1024 });
-    await page.goto("https://typeset.io/paraphraser");
+    page.goto("https://typeset.io/paraphraser");
     const textToMatch = "Write here or ";
     const xpathSelector = `//p[contains(text(), "${textToMatch}")]`;
     await page.waitForXPath(xpathSelector);
@@ -46,8 +45,7 @@ async function startRephrase(userInput) {
       );
       const $ = cheerio.load(htmlContent);
       const textContent = $('div[data-paraphraser-output="true"]').text();
-      await browser.close();
-
+      await page.close();
       return { textContent };
     }
   } catch (error) {
